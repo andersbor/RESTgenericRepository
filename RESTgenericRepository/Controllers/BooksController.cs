@@ -7,25 +7,31 @@ namespace RESTgenericRepository.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly Repository<Book> _repository;
+        private readonly IRepository<Book> _repository;
 
-        public BooksController(Repository<Book> repository)
+        public BooksController(IRepository<Book> repository)
         {
             _repository = repository;
         }
 
         // GET: api/<BooksController>
         [HttpGet]
-        public IEnumerable<Book> Get()
+        public IEnumerable<Book> Get([FromQuery] string? titlestart = null)
         {
-            return _repository.GetAll();
+
+            if (titlestart != null)
+            {
+                Predicate<Book> predicate = (Book b) => b.Title != null && b.Title.StartsWith(titlestart);
+                return _repository.Get(filter: predicate);
+            }
+            return _repository.Get();
         }
 
         // GET api/<BooksController>/5
         [HttpGet("{id}")]
         public Book? Get(int id)
         {
-            return _repository.Get(id);
+            return _repository.GetById(id);
         }
 
         // POST api/<BooksController>

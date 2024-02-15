@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton(new Repository<Book>());
+builder.Services.AddSingleton<IRepository<Book>>(new RepositoryList<Book>());
 
 var app = builder.Build();
 
